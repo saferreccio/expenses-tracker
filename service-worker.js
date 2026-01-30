@@ -1,11 +1,11 @@
 const CACHE_NAME = 'expense-tracker-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/js/storage.js',
-  '/manifest.json'
+  './',
+  './index.html',
+  './css/style.css',
+  './js/app.js',
+  './js/storage.js',
+  './manifest.json'
 ];
 
 // Instalación del Service Worker
@@ -40,11 +40,9 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Si está en cache, devolver del cache
         if (response) {
           return response;
         }
-        // Si no, hacer fetch real
         return fetch(event.request);
       })
   );
