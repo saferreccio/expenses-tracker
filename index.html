@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>💰 Mis Gastos</h1>
+            <div class="month-total">
+                <p class="label">Total este mes</p>
+                <p class="amount" id="monthTotal">$0</p>
+            </div>
+        </header>
+
+        <!-- Add Expense Form -->
+        <section class="add-expense">
+            <h2>Agregar Gasto</h2>
+            <form id="expenseForm">
+                <input 
+                    type="number" 
+                    id="amount" 
+                    placeholder="Monto" 
+                    required
+                    step="0.01"
+                >
+                
+                <select id="category" required>
+                    <option value="">Seleccionar categoría</option>
+                    <option value="comida">🍔 Comida</option>
+                    <option value="transporte">🚗 Transporte</option>
+                    <option value="entretenimiento">🎬 Entretenimiento</option>
+                    <option value="salud">💊 Salud</option>
+                    <option value="hogar">🏠 Hogar</option>
+                    <option value="otros">📦 Otros</option>
+                </select>
+
+                <input 
+                    type="text" 
+                    id="note" 
+                    placeholder="Nota (opcional)"
+                >
+
+                <button type="submit" class="btn-add">Agregar Gasto</button>
+            </form>
+        </section>
+
+        <!-- Expense List -->
+        <section class="expense-list">
+            <h2>Gastos Recientes</h2>
+            <div id="expensesList">
+                <p class="empty-state">No hay gastos registrados todavía</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
