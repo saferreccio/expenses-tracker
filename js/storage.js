@@ -33,5 +33,13 @@ const ExpenseStorage = {
     getMonthTotal: function() {
         const monthExpenses = this.getCurrentMonthExpenses();
         return monthExpenses.reduce((total, expense) => total + expense.amount, 0);
+    },
+
+    // Borrar un gasto por ID
+    deleteExpense: function(id) {
+        let expenses = this.getExpenses();
+        expenses = expenses.filter(expense => expense.id !== id);
+        localStorage.setItem('expenses', JSON.stringify(expenses));
+        return true;
     }
 };

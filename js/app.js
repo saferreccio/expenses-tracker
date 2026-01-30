@@ -89,7 +89,17 @@ function displayExpenses() {
                     <div class="expense-date">${formattedDate}</div>
                 </div>
                 <div class="expense-amount">$${expense.amount.toFixed(2)}</div>
+                <button class="btn-delete" onclick="deleteExpense(${expense.id})">🗑️</button>
             </div>
         `;
     }).join('');
+}
+
+// Función para borrar un gasto
+function deleteExpense(id) {
+    if (confirm('¿Estás seguro de que querés borrar este gasto?')) {
+        ExpenseStorage.deleteExpense(id);
+        updateMonthTotal();
+        displayExpenses();
+    }
 }
