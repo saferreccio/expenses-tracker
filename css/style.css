@@ -194,3 +194,30 @@ header h1 {
 .btn-delete:active {
     transform: scale(0.95);
 }
+
+/* Chart Section */
+.chart-section {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chart-section h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #667eea;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+    .chart-container {
+        height: 250px;
+    }
+}

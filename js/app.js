@@ -10,10 +10,16 @@ const categoryEmojis = {
     'otros': '📦'
 };
 
+// Registrar plugin de datalabels
+if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+}
+
 // Inicializar la app cuando carga la página
 document.addEventListener('DOMContentLoaded', function() {
     updateMonthTotal();
     displayExpenses();
+    updateCategoryChart();
     
     // Escuchar el submit del formulario
     document.getElementById('expenseForm').addEventListener('submit', handleFormSubmit);
@@ -43,6 +49,7 @@ function handleFormSubmit(e) {
     // Actualizar la interfaz
     updateMonthTotal();
     displayExpenses();
+    updateCategoryChart();
     
     // Limpiar el formulario
     document.getElementById('expenseForm').reset();
@@ -101,7 +108,98 @@ function deleteExpense(id) {
         ExpenseStorage.deleteExpense(id);
         updateMonthTotal();
         displayExpenses();
+        updateCategoryChart();
     }
+}
+
+// Generar gráfico de categorías
+let categoryChart = null;
+
+function updateCategoryChart() {
+    const expenses = ExpenseStorage.getCurrentMonthExpenses();
+    
+    // Si no hay gastos, no mostrar gráfico
+    if (expenses.length === 0) {
+        if (categoryChart) {
+            categoryChart.destroy();
+            categoryChart = null;
+        }
+        return;
+    }
+    
+    // Calcular totales por categoría
+    const categoryTotals = {};
+    expenses.forEach(expense => {
+        if (!categoryTotals[expense.category]) {
+            categoryTotals[expense.category] = 0;
+        }
+        categoryTotals[expense.category] += expense.amount;
+    });
+    
+    // Preparar datos para el gráfico
+    const labels = Object.keys(categoryTotals).map(cat => {
+        return categoryEmojis[cat] + ' ' + cat.charAt(0).toUpperCase() + cat.slice(1);
+    });
+    const data = Object.values(categoryTotals);
+    const colors = [
+        '#667eea',
+        '#764ba2',
+        '#f093fb',
+        '#4facfe',
+        '#43e97b',
+        '#fa709a'
+    ];
+    
+    // Crear o actualizar gráfico
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    
+    if (categoryChart) {
+        categoryChart.destroy();
+    }
+    
+    categoryChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                datalabels: {
+                    color: '#fff',
+                    font: {
+                        weight: 'bold',
+                        size: 16
+                    },
+                    formatter: function(value, context) {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        return percentage + '%';
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const value = context.parsed;
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return context.label + ': $' + value.toFixed(2) + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 // Registrar Service Worker para PWA
